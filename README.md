@@ -2,7 +2,7 @@
 
 Case study of AI voice calls for first-contact sales lead qualification.
 
-**Zakres publiczny:** Studium przypadku na podstawie opisu autora.
+**Zakres publiczny:** opis kampanii wychodzącej na podstawie relacji autora oraz wydzielony fragment kodu pokrewnego prototypu OZE.
 
 ## Problem
 
@@ -15,10 +15,24 @@ Voicebot automatyzuje pierwszy telefon sprzedażowy. Rozmawia z potencjalnym kli
 3. Wynik kwalifikacji jest podstawą do przekazania kontaktu do kolejnego kroku sprzedaży.
 4. Zespół może skoncentrować ręczną pracę na kontaktach wymagających przejęcia.
 
-## Technologie
+## Prototyp OZE
 
-Voicebot AI i automatyzacja procesu sprzedaży. Autor wskazuje n8n i Make jako narzędzia używane w realizacjach. Dostawca telefonii, format integracji i eksport tego workflow wymagają weryfikacji.
+W odnalezionym prototypie Twilio obsługuje połączenie przychodzące, a FastAPI zwraca instrukcję TwiML połączenia z serwerem WebSocket. Serwer przekazuje audio między Twilio Media Streams i OpenAI Realtime. Znaczniki odtworzenia pomagają koordynować kolejkę odpowiedzi głosowych. Osobne funkcje pytają o terminy i rezerwują spotkanie przez webhook. Równoległy prototyp używa WebRTC w przeglądarce.
+
+```mermaid
+flowchart LR
+  Phone[Połączenie] --> Twilio[Twilio Media Streams]
+  Twilio <--> API[FastAPI / WebSocket]
+  API <--> AI[OpenAI Realtime]
+  API --> Booking[Webhook terminów i rezerwacji]
+```
 
 ## Co można sprawdzić
 
-Podstawą publikacji jest opis autora. Zakres źródłowy do potwierdzenia obejmuje eksport workflow, faktyczny schemat statusów, integrację z telefonią i dane o wynikach kampanii.
+W `voicebot/media_marks.py` znajduje się funkcja z prototypu, która wysyła znacznik strumienia i po udanym zapisie dodaje go do lokalnej kolejki. Testy wykorzystują atrapę połączenia i działają offline.
+
+```bash
+python -m unittest discover -s tests
+```
+
+Dokładny dostawca telefonii, eksport workflow i wyniki kampanii wychodzącej pozostają niepotwierdzone. Opis prototypu dotyczy kodu obsługi połączeń przychodzących.
